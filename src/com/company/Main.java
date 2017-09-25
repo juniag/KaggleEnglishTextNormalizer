@@ -17,13 +17,17 @@ public class Main {
     public static HashMap<String, String> time = new HashMap<String, String>();
 
     public static void main(String[] args) {
-        String csvFile = "C:/Users/juneg/IdeaProjects/KaggleEnglishTextNormalization/Data/en_train.csv/en_train.csv";
-        try{
-            readTrainCsv(csvFile);
-        }
-        catch (Exception ex) {
-            System.out.println(ex);
-        }
+//        try{
+//            createLookups("Verbatim.csv", "Verbatim");
+//            createLookups("Fraction.csv", "Fraction");
+//            createLookups("Measure.csv", "Measure");
+//            createLookups("Money.csv", "Money");
+//            createLookups("Time.csv", "Time");
+//        }
+//        catch (Exception e){
+//            System.out.println(e);
+//        }
+
     }
 
     public static void readTrainCsv(String csvFile) throws Exception {
@@ -168,14 +172,63 @@ public class Main {
         }
     }
 
+    public static void createLookups(String filename, String mapping){
+        System.out.println(mapping);
+        BufferedReader br = null;
+        String line = "";
+        String csvSplitBy = ",";
+        LinkedList<Pair<String, String>> l = new LinkedList<Pair<String, String>>();
+        HashMap<String, Pair<String, String>> h = new HashMap<String, Pair<String, String>>();
+        try {
+            br = new BufferedReader(new FileReader(filename));
+            while ((line = br.readLine()) != null) {
+                // use comma as separator
+                String[] lines = line.split(csvSplitBy);
+                if(mapping.equals("Verbatim")){
+                    verbatim.put(lines[0], lines[1]);
+                }
+                else if(mapping.equals("Fraction")){
+                    fractionSymbols.put(lines[0], lines[1]);
+                }
+                else if(mapping.equals("Measure")){
+                    measureAbbr.put(lines[0], lines[1]);
+                }
+                else if(mapping.equals("Money")){
+                    money.put(lines[0], lines[1]);
+                }
+                else{
+                    time.put(lines[0], lines[1]);
+                }
+            }
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (br != null) {
+                try {
+                    br.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     public static String identifyAndNormalize(String before){
-        before = before.trim();
+        before = before.trim().substring(1,before.length()-1);
         if(before.matches("\\p{Punct}*")){
             return before;
         }
 
-        //check if verbatim
+        if(verbatim.containsKey(before)){
+            return verbatim.get(before);
+        }
 
+        if(before.endsWith("\'s")){
+            return identifyAndNormalize(before.substring(0,before.length()-2)) + "'s";
+        }
 
         if(before.matches("[a-z]*") || before.matches("[A-Z][a-z]*")){
             if(before.contains("a") || before.contains("e") || before.contains("i")
@@ -211,7 +264,6 @@ public class Main {
         }
 
         if(before.matches("[0-9,]*[0-9]")){
-            //remove commas
             return readNumber(before.replaceAll(",", ""));
         }
 
@@ -224,18 +276,24 @@ public class Main {
         // The groups of numbers are parsed to always have the word sil between them
         // There are also some cases where the last group of characters are letters. The way these are dealt with
         // switch between splitting a letter like an acronym or keeping them together like a plain word (more common)
+        if(before.matches("[(]?\\s*[0-9|A-Z]*\\s*[)]?\\s*([0-9|A-Z]*\\s*[-]*\\s*)*[0-9|A-Z]*")){
+            return readTelephone(before);
+        }
 
         // Measure seems really hard
         // Basically, its numbers followed by abbreviations or symbols that we need to understand
         // We should probably train these too
 
-        // Verbatim is one that needs to be trained
-        // We need to create a hashmap for the different symbols and characters they label as verbatim
-        // This should happen last - anything we can't identify that is one character long should
-        // just be returned and added to the hashmap?
+        if(before.contains(".com") || before.contains(".org") || before.contains(".net") || before.contains(".edu")
+                || before.contains(".gov") || before.contains("www.") || before.contains("http")
+                || before.contains(".co."))
+        {
+            return readWebAddress(before);
+        }
 
-        // Electronic is easy to deal with once we identify it's electronic
-        // Identifying is harder - we should be looking for [.com; .org; .net; www.; http]
+        if(before.startsWith("#")){
+            return "hash tag" + identifyAndNormalize(before.substring(1));
+        }
 
         // Address is an awkward identifier and awkward fix.
         // Going to have to look into it more
@@ -359,5 +417,59 @@ public class Main {
         }
 
         return output;
+    }
+
+    public static String readTelephone(String input){
+        char[] ca = input.toCharArray();
+        String output = "";
+        for(int i = 0; i < ca.length; i++){
+            String unit = ca[i] + "";
+            if(!unit.equals("("){
+                if(unit.equals(")")){
+                    output += "sil" + " ";
+                }
+                else if (unit.equals("-")){
+                    output += "sil" + " ";
+                }
+                else if(Character.isDigit(ca[i])){
+                    output += readNumber(unit) + " ";
+                }
+                else if(Character.isLetter(ca[i])){
+                    if(Character.isLetter(ca[i+1])){
+                        output += unit;
+                    }
+                    else{
+                        output += unit + " ";
+                    }
+                }
+            }
+        }
+
+        return output.trim();
+    }
+
+    public static String readWebAddress(String input){
+        char[] ca = input.toCharArray();
+        String output = "";
+        for(int i = 0; i < ca.length; i++) {
+            String unit = ca[i] + "";
+            if(unit.equals("/")){
+                output += "slash" + " ";
+            }
+            else if(unit.equals(":")){
+                output += "color" + " ";
+            }
+            else if(unit.equals(".")){
+                output += "dot" + " ";
+            }
+            else if(Character.isDigit(ca[i])){
+                output += readNumber(unit) + " ";
+            }
+            else{
+                output += unit + " ";
+            }
+
+        }
+        return output.trim();
     }
 }
