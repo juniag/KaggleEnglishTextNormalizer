@@ -17,7 +17,6 @@ public class Main {
     public static HashMap<String, String> time = new HashMap<String, String>();
 
     public static void main(String[] args) {
-        System.out.println("ahh it isn't working");
 //        try{
 //            createLookups("Verbatim.csv", "Verbatim");
 //            createLookups("Fraction.csv", "Fraction");
@@ -310,6 +309,7 @@ public class Main {
         // Should we train?
 
         // Ordinal falls under roman numerals or 1st/2nd/3rd/4th...
+        // ordinal also is read as "the third/fourth..." depending on if it's a person that it's referring to
 
         // Fraction is pretty easy. It has a /
         // We need to watch out for the symbols that are fractions (like 1/2, 3/4, etc.)
@@ -403,67 +403,14 @@ public class Main {
     }
 
     public static String readNumber(String input){
-        if (input == "0"){
-            return "o";
+    }
+
+    public static String trimZeroes(String input){
+        int trimIndex = 0;
+        while(input.substring(trimIndex, trimIndex + 1).equals("0")){
+            trimIndex++;
         }
-        //1-19 pronunciation
-        String output = "";
-
-        String[] unique = {"","one","two","three","four","five","six","seven","eight","nine","ten",
-                "eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"};
-        String[] tens = {"ten","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety"};
-        //pronunciation of digits beyond tens
-        String[] others = {"ones","tens","hundred","thousand","thousand","thousand","million",
-                "million","million","billion","billion","billion","trillion","trillion","trillion"};
-
-        int number = Integer.parseInt(input);
-        if (number < 100)
-        {
-            if (number < 20){
-                output = output + unique[number];
-                return output;
-            }
-            else{
-                int tenDigit = (int) Math.floor(number/10);
-                output = output + tens[tenDigit-1] + " ";
-
-                int oneDigit = number%10;
-                output = output + unique[oneDigit];
-
-                return output;
-            }
-        }
-        else {
-            //convert to number to string, delete first char, convert to number
-            int realDigit = input.length();
-            int speakingDigit = realDigit % 3;
-            //System.out.println("the speakingDigit: " + speakingDigit);
-            if(speakingDigit == 1){
-                output = output + unique[Integer.parseInt(input.substring(0,1))];
-                output = output + " " + others[realDigit-1] + " ";
-                input = input.substring(1);
-                //System.out.println(output);
-            }
-            //check if it should be pronounced like a 1-19 number
-            else if(speakingDigit == 0){
-                output = output + unique[Integer.parseInt(input.substring(0,1))] + " hundred ";
-                input = input.substring(1);
-                //System.out.println(output);
-            }
-            else if(Integer.parseInt(input.substring(0,speakingDigit)) < 20){
-                output = output + unique[Integer.parseInt(input.substring(0,speakingDigit))];
-                input = input.substring(1);
-                //System.out.println(output);
-            }
-            else if(Integer.parseInt(input.substring(0,speakingDigit)) >= 20){
-                output = output + tens[Integer.parseInt(input.substring(0,1))-1] + " " + unique[Integer.parseInt(input.substring(1,2))] + " " + others[realDigit-1] + " ";
-                input = input.substring(2);
-                //System.out.println(output);
-            }
-            //adding in the "billion", "million"... etc keywords
-            //System.out.println("the new input: " + input);
-            return output + readNumber(input);
-        }
+        return input.substring(trimIndex);
     }
 
     public static String readDecimal(String input){
