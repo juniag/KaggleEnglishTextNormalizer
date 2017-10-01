@@ -12,6 +12,7 @@ public class Main {
     public HashMap<String, String> time = new HashMap<String, String>();
 
     public static void main(String[] args) {
+
         String input = "400";
         System.out.println("printing 400: " + readNumber(input));
         input = "123456789";
@@ -29,6 +30,20 @@ public class Main {
         input = "410023001";
         System.out.println("printing 410023001: " + readNumber(input));
         //it still breaks sometimes, add more tests
+
+        System.out.println("ahh it isn't working");
+//        try{
+//            createLookups("Verbatim.csv", "Verbatim");
+//            createLookups("Fraction.csv", "Fraction");
+//            createLookups("Measure.csv", "Measure");
+//            createLookups("Money.csv", "Money");
+//            createLookups("Time.csv", "Time");
+//        }
+//        catch (Exception e){
+//            System.out.println(e);
+//        }
+
+
     }
 
     public void readAndCreateHashmaps(String type, String input, String output) {
@@ -231,8 +246,9 @@ public class Main {
         return output.trim();
     }
 
-    public static String readNumber(String input) {
-        if (input == "0") {
+
+static String readNumber(String input){
+        if (input == "0"){
             return "o";
         }
         //1-19 pronunciation
@@ -287,32 +303,7 @@ public class Main {
             } else if (Integer.parseInt(input.substring(0, speakingDigit)) >= 20) {
                 output = output + tens[Integer.parseInt(input.substring(0, 1)) - 1] + " " + unique[Integer.parseInt(input.substring(1, 2))] + " " + others[realDigit - 1] + " ";
                 input = input.substring(2);
-                //System.out.println(output);
             }
-            //adding in the "billion", "million"... etc keywords
-            //System.out.println("the new input: " + input);
-
-            //count number of zeroes in the beginning, trim off zeroes
-            //stores input before I fuck with it
-            /*
-            String temp = input;
-
-            int countZero = 0;
-            while (input.substring(0,1)=="0" && input.length()>1){
-            countZero ++;
-                input = input.substring(1);
-            }
-
-            input = temp;
-
-            input = input.substring(countZero);
-
-
-            others[realDigit-1]
-
-
-
-            */
 
             return output + readNumber(input);
         }
@@ -328,5 +319,60 @@ public class Main {
         }
 
         return output;
+    }
+}
+
+    public static String readTelephone(String input){
+        char[] ca = input.toCharArray();
+        String output = "";
+        for(int i = 0; i < ca.length; i++){
+            String unit = ca[i] + "";
+            if(!unit.equals("(")){
+                if(unit.equals(")")){
+                    output += "sil" + " ";
+                }
+                else if (unit.equals("-")){
+                    output += "sil" + " ";
+                }
+                else if(Character.isDigit(ca[i])){
+                    output += readNumber(unit) + " ";
+                }
+                else if(Character.isLetter(ca[i])){
+                    if(Character.isLetter(ca[i+1])){
+                        output += unit;
+                    }
+                    else{
+                        output += unit + " ";
+                    }
+                }
+            }
+        }
+
+        return output.trim();
+    }
+
+    public static String readWebAddress(String input){
+        char[] ca = input.toCharArray();
+        String output = "";
+        for(int i = 0; i < ca.length; i++) {
+            String unit = ca[i] + "";
+            if(unit.equals("/")){
+                output += "slash" + " ";
+            }
+            else if(unit.equals(":")){
+                output += "color" + " ";
+            }
+            else if(unit.equals(".")){
+                output += "dot" + " ";
+            }
+            else if(Character.isDigit(ca[i])){
+                output += readNumber(unit) + " ";
+            }
+            else{
+                output += unit + " ";
+            }
+
+        }
+        return output.trim();
     }
 }
