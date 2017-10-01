@@ -26,39 +26,40 @@ public class Main {
         System.out.println("printing 1000000000: " + readNumber(input));
         input = "1111111111";
         System.out.println("printing 1111111111: " + readNumber(input));
+        input = "410023001";
+        System.out.println("printing 410023001: " + readNumber(input));
         //it still breaks sometimes, add more tests
     }
 
-    public void readAndCreateHashmaps(String type, String input, String output){
-        if(type.equals("VERBATIM")){
+    public void readAndCreateHashmaps(String type, String input, String output) {
+        if (type.equals("VERBATIM")) {
             verbatim.put(input, output);
             return;
         }
 
-        if(type.equals("FRACTION")){
+        if (type.equals("FRACTION")) {
             String[] splitOutput = output.split("and");
             fractionSymbols.put(input.substring(input.length() - 1),
-                    splitOutput[splitOutput.length-1]);
+                    splitOutput[splitOutput.length - 1]);
         }
 
-        if(type.equals("MEASURE")){
+        if (type.equals("MEASURE")) {
             char[] ca = input.toCharArray();
             boolean firstIndAbbr = false;
             int i = 0;
-            while(!firstIndAbbr && i < ca.length){
+            while (!firstIndAbbr && i < ca.length) {
                 char c = ca[i];
                 String sc = c + "";
-                if(Character.isDigit(c) || Character.isWhitespace(c)
-                        || sc.equals(".") || sc.equals(",")){
+                if (Character.isDigit(c) || Character.isWhitespace(c)
+                        || sc.equals(".") || sc.equals(",")) {
                     i++;
-                }
-                else{
+                } else {
                     firstIndAbbr = true;
                 }
             }
 
             String sym = "";
-            while(i < ca.length){
+            while (i < ca.length) {
                 sym += ca[i];
                 i++;
             }
@@ -67,53 +68,51 @@ public class Main {
 
         }
 
-        if(type.equals("MONEY")){
+        if (type.equals("MONEY")) {
 
         }
 
-        if(type.equals("TIME")){
+        if (type.equals("TIME")) {
 
         }
     }
 
-    public String identifyAndNormalize(String before){
+    public String identifyAndNormalize(String before) {
         before = before.trim();
-        if(before.matches("\\p{Punct}*")){
+        if (before.matches("\\p{Punct}*")) {
             return before;
         }
 
-        if(before.matches("[a-z]*") || before.matches("[A-Z][a-z]*")){
+        if (before.matches("[a-z]*") || before.matches("[A-Z][a-z]*")) {
             return before;
         }
 
-        if(before.matches("[A-Z]*")){
-            if(before.matches("^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$")){
+        if (before.matches("[A-Z]*")) {
+            if (before.matches("^M{0,4}(CM|CD|D?C{0,3})(XC|XL|L?X{0,3})(IX|IV|V?I{0,3})$")) {
                 return readRomanNumeral(before);
-            }
-            else{
+            } else {
                 return spreadAcronym(before);
             }
         }
 
-        if(before.matches("[A-Z]*[s]]")){
-            return spreadAcronym(before.substring(0, before.length()-2)) + "'s";
+        if (before.matches("[A-Z]*[s]]")) {
+            return spreadAcronym(before.substring(0, before.length() - 2)) + "'s";
         }
 
-        if(before.matches("[0-9]*")){
-            if(before.length() == 4){
+        if (before.matches("[0-9]*")) {
+            if (before.length() == 4) {
                 return readYear(before);
-            }
-            else{
+            } else {
                 return readNumber(before);
             }
         }
 
-        if(before.matches("[0-9,]*[0-9]")){
+        if (before.matches("[0-9,]*[0-9]")) {
             //remove commas
             return readNumber(before.replaceAll(",", ""));
         }
 
-        if(before.matches("[0-9]*.[0-9]*")){
+        if (before.matches("[0-9]*.[0-9]*")) {
             return readDecimal(before);
         }
 
@@ -158,10 +157,9 @@ public class Main {
 
     private String readYear(String before) {
         int num = Integer.parseInt(before);
-        if(num >= 2000 && num < 2010){
+        if (num >= 2000 && num < 2010) {
             return readNumber(before);
-        }
-        else{
+        } else {
             return readNumber(before.substring(0, 2)) + readNumber(before.substring(2));
         }
     }
@@ -170,12 +168,10 @@ public class Main {
         int decimal = 0;
 
         String romanNumeral = before.toUpperCase();
-        for(int x = 0;x<romanNumeral.length();x++)
-        {
+        for (int x = 0; x < romanNumeral.length(); x++) {
             char convertToDecimal = before.charAt(x);
 
-            switch (convertToDecimal)
-            {
+            switch (convertToDecimal) {
                 case 'M':
                     decimal += 1000;
                     break;
@@ -205,112 +201,129 @@ public class Main {
                     break;
             }
         }
-        if (romanNumeral.contains("IV"))
-        {
-            decimal-=2;
+        if (romanNumeral.contains("IV")) {
+            decimal -= 2;
         }
-        if (romanNumeral.contains("IX"))
-        {
-            decimal-=2;
+        if (romanNumeral.contains("IX")) {
+            decimal -= 2;
         }
-        if (romanNumeral.contains("XL"))
-        {
-            decimal-=10;
+        if (romanNumeral.contains("XL")) {
+            decimal -= 10;
         }
-        if (romanNumeral.contains("XC"))
-        {
-            decimal-=10;
+        if (romanNumeral.contains("XC")) {
+            decimal -= 10;
         }
-        if (romanNumeral.contains("CD"))
-        {
-            decimal-=100;
+        if (romanNumeral.contains("CD")) {
+            decimal -= 100;
         }
-        if (romanNumeral.contains("CM"))
-        {
-            decimal-=100;
+        if (romanNumeral.contains("CM")) {
+            decimal -= 100;
         }
         return readNumber(Integer.toString(decimal));
     }
 
-    public String spreadAcronym(String input){
+    public String spreadAcronym(String input) {
         String output = "";
         input = input.toLowerCase();
-        for(char c: input.toCharArray()){
+        for (char c : input.toCharArray()) {
             output += c + " ";
         }
         return output.trim();
     }
 
-    public static String readNumber(String input){
-        if (input == "0"){
+    public static String readNumber(String input) {
+        if (input == "0") {
             return "o";
         }
         //1-19 pronunciation
         String output = "";
 
-        String[] unique = {"","one","two","three","four","five","six","seven","eight","nine","ten",
-                "eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"};
-        String[] tens = {"ten","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety"};
+        String[] unique = {"", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine", "ten",
+                "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"};
+        String[] tens = {"ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"};
         //pronunciation of digits beyond tens
-        String[] others = {"ones","tens","hundred","thousand","thousand","thousand","million",
-                "million","million","billion","billion","billion","trillion","trillion","trillion"};
+        String[] others = {"ones", "tens", "hundred", "thousand", "thousand", "thousand", "million",
+                "million", "million", "billion", "billion", "billion", "trillion", "trillion", "trillion"};
 
         int number = Integer.parseInt(input);
-        if (number < 100)
-        {
-            if (number < 20){
+        if (number < 100) {
+            if (number < 20) {
                 output = output + unique[number];
                 return output;
-            }
-            else{
-                int tenDigit = (int) Math.floor(number/10);
-                output = output + tens[tenDigit-1] + " ";
+            } else {
+                int tenDigit = (int) Math.floor(number / 10);
+                output = output + tens[tenDigit - 1] + " ";
 
-                int oneDigit = number%10;
+                int oneDigit = number % 10;
                 output = output + unique[oneDigit];
 
                 return output;
             }
-        }
-        else {
+        } else {
             //convert to number to string, delete first char, convert to number
             int realDigit = input.length();
+            //System.out.println(realDigit);
             int speakingDigit = realDigit % 3;
-            //System.out.println("the speakingDigit: " + speakingDigit);
-            if(speakingDigit == 1){
-                output = output + unique[Integer.parseInt(input.substring(0,1))];
-                output = output + " " + others[realDigit-1] + " ";
+            //System.out.println(input);
+            if (speakingDigit == 1) {
+
+                output = output + unique[Integer.parseInt(input.substring(0, 1))] + " ";
+                output = output + others[realDigit - 1] + " ";
                 input = input.substring(1);
                 //System.out.println(output);
             }
             //check if it should be pronounced like a 1-19 number
-            else if(speakingDigit == 0){
-                output = output + unique[Integer.parseInt(input.substring(0,1))] + " hundred ";
+
+            else if (speakingDigit == 0) {
+                output = output + unique[Integer.parseInt(input.substring(0, 1))] + " hundred ";
                 input = input.substring(1);
                 //System.out.println(output);
-            }
-            else if(Integer.parseInt(input.substring(0,speakingDigit)) < 20){
-                output = output + unique[Integer.parseInt(input.substring(0,speakingDigit))];
+            } else if (Integer.parseInt(input.substring(0, speakingDigit)) < 11) {
+                output = output + unique[Integer.parseInt(input.substring(0, speakingDigit))] + " ";
                 input = input.substring(1);
-                //System.out.println(output);
-            }
-            else if(Integer.parseInt(input.substring(0,speakingDigit)) >= 20){
-                output = output + tens[Integer.parseInt(input.substring(0,1))-1] + " " + unique[Integer.parseInt(input.substring(1,2))] + " " + others[realDigit-1] + " ";
+            } else if (Integer.parseInt(input.substring(0, speakingDigit)) >= 11 && Integer.parseInt(input.substring(0, speakingDigit)) < 20){
+                output = output + unique[Integer.parseInt(input.substring(0, speakingDigit))] + " " + others[realDigit - 1] + " ";
+                input = input.substring(2);
+            } else if (Integer.parseInt(input.substring(0, speakingDigit)) >= 20) {
+                output = output + tens[Integer.parseInt(input.substring(0, 1)) - 1] + " " + unique[Integer.parseInt(input.substring(1, 2))] + " " + others[realDigit - 1] + " ";
                 input = input.substring(2);
                 //System.out.println(output);
             }
             //adding in the "billion", "million"... etc keywords
             //System.out.println("the new input: " + input);
+
+            //count number of zeroes in the beginning, trim off zeroes
+            //stores input before I fuck with it
+            /*
+            String temp = input;
+
+            int countZero = 0;
+            while (input.substring(0,1)=="0" && input.length()>1){
+            countZero ++;
+                input = input.substring(1);
+            }
+
+            input = temp;
+
+            input = input.substring(countZero);
+
+
+            others[realDigit-1]
+
+
+
+            */
+
             return output + readNumber(input);
         }
     }
 
-    public String readDecimal(String input){
+    public String readDecimal(String input) {
         String[] split = input.split(".");
         String output = readNumber(split[0]);
 
         char[] decimals = split[1].toCharArray();
-        for(char c: decimals){
+        for (char c : decimals) {
             output += " " + readNumber(c + "");
         }
 
