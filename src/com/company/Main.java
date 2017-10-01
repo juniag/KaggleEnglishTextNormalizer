@@ -402,9 +402,67 @@ public class Main {
     }
 
     public static String readNumber(String input){
-        int number = Integer.parseInt(input);
+        if (input == "0"){
+            return "o";
+        }
+        //1-19 pronunciation
+        String output = "";
 
-        return "";
+        String[] unique = {"","one","two","three","four","five","six","seven","eight","nine","ten",
+                "eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"};
+        String[] tens = {"ten","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety"};
+        //pronunciation of digits beyond tens
+        String[] others = {"ones","tens","hundred","thousand","thousand","thousand","million",
+                "million","million","billion","billion","billion","trillion","trillion","trillion"};
+
+        int number = Integer.parseInt(input);
+        if (number < 100)
+        {
+            if (number < 20){
+                output = output + unique[number];
+                return output;
+            }
+            else{
+                int tenDigit = (int) Math.floor(number/10);
+                output = output + tens[tenDigit-1] + " ";
+
+                int oneDigit = number%10;
+                output = output + unique[oneDigit];
+
+                return output;
+            }
+        }
+        else {
+            //convert to number to string, delete first char, convert to number
+            int realDigit = input.length();
+            int speakingDigit = realDigit % 3;
+            //System.out.println("the speakingDigit: " + speakingDigit);
+            if(speakingDigit == 1){
+                output = output + unique[Integer.parseInt(input.substring(0,1))];
+                output = output + " " + others[realDigit-1] + " ";
+                input = input.substring(1);
+                //System.out.println(output);
+            }
+            //check if it should be pronounced like a 1-19 number
+            else if(speakingDigit == 0){
+                output = output + unique[Integer.parseInt(input.substring(0,1))] + " hundred ";
+                input = input.substring(1);
+                //System.out.println(output);
+            }
+            else if(Integer.parseInt(input.substring(0,speakingDigit)) < 20){
+                output = output + unique[Integer.parseInt(input.substring(0,speakingDigit))];
+                input = input.substring(1);
+                //System.out.println(output);
+            }
+            else if(Integer.parseInt(input.substring(0,speakingDigit)) >= 20){
+                output = output + tens[Integer.parseInt(input.substring(0,1))-1] + " " + unique[Integer.parseInt(input.substring(1,2))] + " " + others[realDigit-1] + " ";
+                input = input.substring(2);
+                //System.out.println(output);
+            }
+            //adding in the "billion", "million"... etc keywords
+            //System.out.println("the new input: " + input);
+            return output + readNumber(input);
+        }
     }
 
     public static String readDecimal(String input){
@@ -424,7 +482,7 @@ public class Main {
         String output = "";
         for(int i = 0; i < ca.length; i++){
             String unit = ca[i] + "";
-            if(!unit.equals("("){
+            if(!unit.equals("(")){
                 if(unit.equals(")")){
                     output += "sil" + " ";
                 }
