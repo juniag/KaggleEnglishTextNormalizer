@@ -1,128 +1,44 @@
 package com.company;
 
-import javafx.util.Pair;
-
-import java.io.*;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
 
 public class Main {
 
     //class variables
-    public static HashMap<String, String> verbatim = new HashMap<String, String>();
-    public static HashMap<String, String> fractionSymbols = new HashMap<String, String>();
-    public static HashMap<String, String> measureAbbr = new HashMap<String, String>();
-    public static HashMap<String, String> money = new HashMap<String, String>();
-    public static HashMap<String, String> time = new HashMap<String, String>();
+    public HashMap<String, String> verbatim = new HashMap<String, String>();
+    public HashMap<String, String> fractionSymbols = new HashMap<String, String>();
+    public HashMap<String, String> measureAbbr = new HashMap<String, String>();
+    public HashMap<String, String> money = new HashMap<String, String>();
+    public HashMap<String, String> time = new HashMap<String, String>();
 
     public static void main(String[] args) {
-//        try{
-//            createLookups("Verbatim.csv", "Verbatim");
-//            createLookups("Fraction.csv", "Fraction");
-//            createLookups("Measure.csv", "Measure");
-//            createLookups("Money.csv", "Money");
-//            createLookups("Time.csv", "Time");
-//        }
-//        catch (Exception e){
-//            System.out.println(e);
-//        }
-
+        String input = "400";
+        System.out.println("printing 400: " + readNumber(input));
+        input = "123456789";
+        System.out.println("printing 123456789: " + readNumber(input));
+        input = "999999999";
+        System.out.println("printing 999999999: " + readNumber(input));
+        input = "400400400";
+        System.out.println("printing 400400400: " + readNumber(input));
+        input = "111111111";
+        System.out.println("printing 111111111: " + readNumber(input)); //oops
+        input = "1000000000";
+        System.out.println("printing 1000000000: " + readNumber(input));
+        input = "1111111111";
+        System.out.println("printing 1111111111: " + readNumber(input));
+        //it still breaks sometimes, add more tests
     }
 
-    public static void readTrainCsv(String csvFile) throws Exception {
-        BufferedReader br = null;
-        String line = "";
-        String csvSplitBy = ",";
-        LinkedList<Pair<String, String>> l = new LinkedList<Pair<String, String>>();
-        HashMap<String, Pair<String, String>> h = new HashMap<String, Pair<String, String>>();
-        try {
-
-            br = new BufferedReader(new FileReader(csvFile));
-            while ((line = br.readLine()) != null) {
-                // use comma as separator
-                String[] lines = line.split(csvSplitBy);
-                if(lines.length > 5){
-                    String four = lines[lines.length-1];
-                    int ind = lines.length - 1;
-                    if(!(four.length() > 1 && four.startsWith("\"") && four.endsWith("\""))) {
-                        ind--;
-                        while (!lines[ind].startsWith("\"")) {
-                            four = lines[ind] + "," + four;
-                            ind--;
-                        }
-                        four = lines[ind] + "," + four;
-                    }
-
-                    String three = lines[3];
-                    for(int tind = 4; tind < ind; tind++){
-                        three = three + "," + lines[tind];
-                    }
-
-                    lines[3] = three;
-                    lines[4] = four;
-                }
-
-                try{
-                    readAndCreateHashmaps(lines[2].substring(1, lines[2].length()-1),
-                            lines[3].substring(1, lines[3].length()-1),
-                            lines[4].substring(1, lines[4].length()-1));
-                }
-                catch(Exception ex){
-                    System.out.println(ex);
-                    System.out.println(lines[2]);
-                    System.out.println(lines[3]);
-                    System.out.println(lines[4]);
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-
-        writeHashMapToCsv("Verbatim.csv", verbatim);
-        writeHashMapToCsv("Fraction.csv", fractionSymbols);
-        writeHashMapToCsv("Measure.csv", measureAbbr);
-        writeHashMapToCsv("Money.csv", money);
-        writeHashMapToCsv("Time.csv", time);
-    }
-
-    public static void writeHashMapToCsv(String file, HashMap<String, String> map) throws Exception {
-        String eol = System.getProperty("line.separator");
-        try (Writer writer = new FileWriter(file)) {
-            for (HashMap.Entry<String, String> entry : map.entrySet()) {
-                writer.append(entry.getKey())
-                        .append(',')
-                        .append(entry.getValue())
-                        .append(eol);
-            }
-        } catch (IOException ex) {
-            ex.printStackTrace(System.err);
-        }
-    }
-
-    public static void readAndCreateHashmaps(String type, String input, String output){
-        System.out.println(type);
+    public void readAndCreateHashmaps(String type, String input, String output){
         if(type.equals("VERBATIM")){
-            verbatim.put(input.trim(), output.trim());
+            verbatim.put(input, output);
             return;
         }
 
         if(type.equals("FRACTION")){
             String[] splitOutput = output.split("and");
-            fractionSymbols.put(input.substring(input.length() - 1).trim(),
-                    splitOutput[splitOutput.length-1].trim());
-            return;
+            fractionSymbols.put(input.substring(input.length() - 1),
+                    splitOutput[splitOutput.length-1]);
         }
 
         if(type.equals("MEASURE")){
@@ -147,98 +63,27 @@ public class Main {
                 i++;
             }
 
-            measureAbbr.put(sym.trim(), output.trim());
-            return;
+            //we need to be able to separate the after words to isolate the translation for the abbr
+
         }
 
         if(type.equals("MONEY")){
-            String[] splitSym = input.split("[0-9]|[,]|[.]");
-            for(String s: splitSym) {
-                if(!s.equals("")){
-                    money.put(s.trim(), output.trim());
-                    return;
-                }
-            }
+
         }
 
         if(type.equals("TIME")){
-            String[] splitSym = input.split("[0-9]|[:]");
-            for(String s: splitSym) {
-                if(!s.equals("")){
-                    time.put(s.trim(), output.trim());
-                    return;
-                }
-            }
+
         }
     }
 
-    public static void createLookups(String filename, String mapping){
-        System.out.println(mapping);
-        BufferedReader br = null;
-        String line = "";
-        String csvSplitBy = ",";
-        LinkedList<Pair<String, String>> l = new LinkedList<Pair<String, String>>();
-        HashMap<String, Pair<String, String>> h = new HashMap<String, Pair<String, String>>();
-        try {
-            br = new BufferedReader(new FileReader(filename));
-            while ((line = br.readLine()) != null) {
-                // use comma as separator
-                String[] lines = line.split(csvSplitBy);
-                if(mapping.equals("Verbatim")){
-                    verbatim.put(lines[0], lines[1]);
-                }
-                else if(mapping.equals("Fraction")){
-                    fractionSymbols.put(lines[0], lines[1]);
-                }
-                else if(mapping.equals("Measure")){
-                    measureAbbr.put(lines[0], lines[1]);
-                }
-                else if(mapping.equals("Money")){
-                    money.put(lines[0], lines[1]);
-                }
-                else{
-                    time.put(lines[0], lines[1]);
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (br != null) {
-                try {
-                    br.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
-    public static String identifyAndNormalize(String before){
-        before = before.trim().substring(1,before.length()-1);
+    public String identifyAndNormalize(String before){
+        before = before.trim();
         if(before.matches("\\p{Punct}*")){
             return before;
         }
 
-        if(verbatim.containsKey(before)){
-            return verbatim.get(before);
-        }
-
-        if(before.endsWith("\'s")){
-            return identifyAndNormalize(before.substring(0,before.length()-2)) + "'s";
-        }
-
         if(before.matches("[a-z]*") || before.matches("[A-Z][a-z]*")){
-            if(before.contains("a") || before.contains("e") || before.contains("i")
-                    || before.contains("o") || before.contains("u") || before.contains("y")){
-                return before;
-            }
-            else{
-                return spreadAcronym(before);
-            }
-
+            return before;
         }
 
         if(before.matches("[A-Z]*")){
@@ -264,6 +109,7 @@ public class Main {
         }
 
         if(before.matches("[0-9,]*[0-9]")){
+            //remove commas
             return readNumber(before.replaceAll(",", ""));
         }
 
@@ -276,24 +122,18 @@ public class Main {
         // The groups of numbers are parsed to always have the word sil between them
         // There are also some cases where the last group of characters are letters. The way these are dealt with
         // switch between splitting a letter like an acronym or keeping them together like a plain word (more common)
-        if(before.matches("[(]?\\s*[0-9|A-Z]*\\s*[)]?\\s*([0-9|A-Z]*\\s*[-]*\\s*)*[0-9|A-Z]*")){
-            return readTelephone(before);
-        }
 
         // Measure seems really hard
         // Basically, its numbers followed by abbreviations or symbols that we need to understand
         // We should probably train these too
 
-        if(before.contains(".com") || before.contains(".org") || before.contains(".net") || before.contains(".edu")
-                || before.contains(".gov") || before.contains("www.") || before.contains("http")
-                || before.contains(".co."))
-        {
-            return readWebAddress(before);
-        }
+        // Verbatim is one that needs to be trained
+        // We need to create a hashmap for the different symbols and characters they label as verbatim
+        // This should happen last - anything we can't identify that is one character long should
+        // just be returned and added to the hashmap?
 
-        if(before.startsWith("#")){
-            return "hash tag" + identifyAndNormalize(before.substring(1));
-        }
+        // Electronic is easy to deal with once we identify it's electronic
+        // Identifying is harder - we should be looking for [.com; .org; .net; www.; http]
 
         // Address is an awkward identifier and awkward fix.
         // Going to have to look into it more
@@ -316,7 +156,7 @@ public class Main {
         return null;
     }
 
-    public static String readYear(String before) {
+    private String readYear(String before) {
         int num = Integer.parseInt(before);
         if(num >= 2000 && num < 2010){
             return readNumber(before);
@@ -326,7 +166,7 @@ public class Main {
         }
     }
 
-    public static String readRomanNumeral(String before) {
+    private String readRomanNumeral(String before) {
         int decimal = 0;
 
         String romanNumeral = before.toUpperCase();
@@ -392,7 +232,7 @@ public class Main {
         return readNumber(Integer.toString(decimal));
     }
 
-    public static String spreadAcronym(String input){
+    public String spreadAcronym(String input){
         String output = "";
         input = input.toLowerCase();
         for(char c: input.toCharArray()){
@@ -402,12 +242,70 @@ public class Main {
     }
 
     public static String readNumber(String input){
-        int number = Integer.parseInt(input);
+        if (input == "0"){
+            return "o";
+        }
+        //1-19 pronunciation
+        String output = "";
 
-        return "";
+        String[] unique = {"","one","two","three","four","five","six","seven","eight","nine","ten",
+                "eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"};
+        String[] tens = {"ten","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety"};
+        //pronunciation of digits beyond tens
+        String[] others = {"ones","tens","hundred","thousand","thousand","thousand","million",
+                "million","million","billion","billion","billion","trillion","trillion","trillion"};
+
+        int number = Integer.parseInt(input);
+        if (number < 100)
+        {
+            if (number < 20){
+                output = output + unique[number];
+                return output;
+            }
+            else{
+                int tenDigit = (int) Math.floor(number/10);
+                output = output + tens[tenDigit-1] + " ";
+
+                int oneDigit = number%10;
+                output = output + unique[oneDigit];
+
+                return output;
+            }
+        }
+        else {
+            //convert to number to string, delete first char, convert to number
+            int realDigit = input.length();
+            int speakingDigit = realDigit % 3;
+            //System.out.println("the speakingDigit: " + speakingDigit);
+            if(speakingDigit == 1){
+                output = output + unique[Integer.parseInt(input.substring(0,1))];
+                output = output + " " + others[realDigit-1] + " ";
+                input = input.substring(1);
+                //System.out.println(output);
+            }
+            //check if it should be pronounced like a 1-19 number
+            else if(speakingDigit == 0){
+                output = output + unique[Integer.parseInt(input.substring(0,1))] + " hundred ";
+                input = input.substring(1);
+                //System.out.println(output);
+            }
+            else if(Integer.parseInt(input.substring(0,speakingDigit)) < 20){
+                output = output + unique[Integer.parseInt(input.substring(0,speakingDigit))];
+                input = input.substring(1);
+                //System.out.println(output);
+            }
+            else if(Integer.parseInt(input.substring(0,speakingDigit)) >= 20){
+                output = output + tens[Integer.parseInt(input.substring(0,1))-1] + " " + unique[Integer.parseInt(input.substring(1,2))] + " " + others[realDigit-1] + " ";
+                input = input.substring(2);
+                //System.out.println(output);
+            }
+            //adding in the "billion", "million"... etc keywords
+            //System.out.println("the new input: " + input);
+            return output + readNumber(input);
+        }
     }
 
-    public static String readDecimal(String input){
+    public String readDecimal(String input){
         String[] split = input.split(".");
         String output = readNumber(split[0]);
 
@@ -417,59 +315,5 @@ public class Main {
         }
 
         return output;
-    }
-
-    public static String readTelephone(String input){
-        char[] ca = input.toCharArray();
-        String output = "";
-        for(int i = 0; i < ca.length; i++){
-            String unit = ca[i] + "";
-            if(!unit.equals("("){
-                if(unit.equals(")")){
-                    output += "sil" + " ";
-                }
-                else if (unit.equals("-")){
-                    output += "sil" + " ";
-                }
-                else if(Character.isDigit(ca[i])){
-                    output += readNumber(unit) + " ";
-                }
-                else if(Character.isLetter(ca[i])){
-                    if(Character.isLetter(ca[i+1])){
-                        output += unit;
-                    }
-                    else{
-                        output += unit + " ";
-                    }
-                }
-            }
-        }
-
-        return output.trim();
-    }
-
-    public static String readWebAddress(String input){
-        char[] ca = input.toCharArray();
-        String output = "";
-        for(int i = 0; i < ca.length; i++) {
-            String unit = ca[i] + "";
-            if(unit.equals("/")){
-                output += "slash" + " ";
-            }
-            else if(unit.equals(":")){
-                output += "color" + " ";
-            }
-            else if(unit.equals(".")){
-                output += "dot" + " ";
-            }
-            else if(Character.isDigit(ca[i])){
-                output += readNumber(unit) + " ";
-            }
-            else{
-                output += unit + " ";
-            }
-
-        }
-        return output.trim();
     }
 }
