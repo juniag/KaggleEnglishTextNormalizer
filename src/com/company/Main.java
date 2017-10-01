@@ -17,6 +17,7 @@ public class Main {
     public static HashMap<String, String> time = new HashMap<String, String>();
 
     public static void main(String[] args) {
+        System.out.println("ahh it isn't working");
 //        try{
 //            createLookups("Verbatim.csv", "Verbatim");
 //            createLookups("Fraction.csv", "Fraction");
