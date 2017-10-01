@@ -17,8 +17,8 @@
       <file leaf-file-name="Main.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/com/company/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="721">
-              <caret line="404" column="50" lean-forward="false" selection-start-line="404" selection-start-column="50" selection-end-line="404" selection-end-column="50" />
+            <state relative-caret-position="408">
+              <caret line="132" column="81" lean-forward="true" selection-start-line="132" selection-start-column="81" selection-end-line="132" selection-end-column="81" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#251#267#0" expanded="true" />
@@ -26,22 +26,23 @@
                 <element signature="e#429#445#0" expanded="true" />
                 <element signature="e#510#526#0" expanded="true" />
                 <element signature="e#590#606#0" expanded="true" />
+                <element signature="method#main#0;class#Main#0" expanded="false" />
                 <element signature="method#readTrainCsv#0;class#Main#0" expanded="false" />
-                <element signature="e#1263#1285#0" expanded="true" />
-                <element signature="e#1350#1380#0" expanded="true" />
+                <element signature="e#2131#2153#0" expanded="true" />
+                <element signature="e#2218#2248#0" expanded="true" />
                 <element signature="method#writeHashMapToCsv#0;class#Main#0" expanded="false" />
                 <element signature="method#readAndCreateHashmaps#0;class#Main#0" expanded="false" />
                 <element signature="method#createLookups#0;class#Main#0" expanded="false" />
-                <element signature="e#6279#6301#0" expanded="true" />
-                <element signature="e#6366#6396#0" expanded="true" />
+                <element signature="e#7147#7169#0" expanded="true" />
+                <element signature="e#7234#7264#0" expanded="true" />
                 <element signature="method#identifyAndNormalize#0;class#Main#0" expanded="false" />
                 <element signature="method#readYear#0;class#Main#0" expanded="false" />
                 <element signature="method#readRomanNumeral#0;class#Main#0" expanded="false" />
                 <element signature="method#spreadAcronym#0;class#Main#0" expanded="false" />
-                <element signature="method#trimZeroes#0;class#Main#0" expanded="false" />
+                <element signature="method#readNumber#0;class#Main#0" expanded="false" />
                 <element signature="method#readDecimal#0;class#Main#0" expanded="false" />
-                <element signature="method#readTelephone#0;class#Main#0" expanded="false" />
-                <element signature="method#readWebAddress#0;class#Main#0" expanded="false" />
+                <marker date="1506842143342" expanded="false" signature="17744:18598" ph="{...}" />
+                <marker date="1506842143342" expanded="false" signature="18653:19309" ph="{...}" />
               </folding>
             </state>
           </provider>
@@ -202,7 +203,7 @@
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
-      <option name="time" value="9" />
+      <option name="time" value="10" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -218,30 +219,31 @@
             <element signature="e#429#445#0" expanded="true" />
             <element signature="e#510#526#0" expanded="true" />
             <element signature="e#590#606#0" expanded="true" />
+            <element signature="method#main#0;class#Main#0" expanded="false" />
             <element signature="method#readTrainCsv#0;class#Main#0" expanded="false" />
-            <element signature="e#1263#1285#0" expanded="true" />
-            <element signature="e#1350#1380#0" expanded="true" />
+            <element signature="e#2131#2153#0" expanded="true" />
+            <element signature="e#2218#2248#0" expanded="true" />
             <element signature="method#writeHashMapToCsv#0;class#Main#0" expanded="false" />
             <element signature="method#readAndCreateHashmaps#0;class#Main#0" expanded="false" />
             <element signature="method#createLookups#0;class#Main#0" expanded="false" />
-            <element signature="e#6279#6301#0" expanded="true" />
-            <element signature="e#6366#6396#0" expanded="true" />
+            <element signature="e#7147#7169#0" expanded="true" />
+            <element signature="e#7234#7264#0" expanded="true" />
             <element signature="method#identifyAndNormalize#0;class#Main#0" expanded="false" />
             <element signature="method#readYear#0;class#Main#0" expanded="false" />
             <element signature="method#readRomanNumeral#0;class#Main#0" expanded="false" />
             <element signature="method#spreadAcronym#0;class#Main#0" expanded="false" />
-            <element signature="method#trimZeroes#0;class#Main#0" expanded="false" />
+            <element signature="method#readNumber#0;class#Main#0" expanded="false" />
             <element signature="method#readDecimal#0;class#Main#0" expanded="false" />
-            <element signature="method#readTelephone#0;class#Main#0" expanded="false" />
-            <element signature="method#readWebAddress#0;class#Main#0" expanded="false" />
+            <marker date="1506842143342" expanded="false" signature="17744:18598" ph="{...}" />
+            <marker date="1506842143342" expanded="false" signature="18653:19309" ph="{...}" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/com/company/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="721">
-          <caret line="404" column="50" lean-forward="false" selection-start-line="404" selection-start-column="50" selection-end-line="404" selection-end-column="50" />
+        <state relative-caret-position="408">
+          <caret line="132" column="81" lean-forward="true" selection-start-line="132" selection-start-column="81" selection-end-line="132" selection-end-column="81" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#251#267#0" expanded="true" />
@@ -249,22 +251,23 @@
             <element signature="e#429#445#0" expanded="true" />
             <element signature="e#510#526#0" expanded="true" />
             <element signature="e#590#606#0" expanded="true" />
+            <element signature="method#main#0;class#Main#0" expanded="false" />
             <element signature="method#readTrainCsv#0;class#Main#0" expanded="false" />
-            <element signature="e#1263#1285#0" expanded="true" />
-            <element signature="e#1350#1380#0" expanded="true" />
+            <element signature="e#2131#2153#0" expanded="true" />
+            <element signature="e#2218#2248#0" expanded="true" />
             <element signature="method#writeHashMapToCsv#0;class#Main#0" expanded="false" />
             <element signature="method#readAndCreateHashmaps#0;class#Main#0" expanded="false" />
             <element signature="method#createLookups#0;class#Main#0" expanded="false" />
-            <element signature="e#6279#6301#0" expanded="true" />
-            <element signature="e#6366#6396#0" expanded="true" />
+            <element signature="e#7147#7169#0" expanded="true" />
+            <element signature="e#7234#7264#0" expanded="true" />
             <element signature="method#identifyAndNormalize#0;class#Main#0" expanded="false" />
             <element signature="method#readYear#0;class#Main#0" expanded="false" />
             <element signature="method#readRomanNumeral#0;class#Main#0" expanded="false" />
             <element signature="method#spreadAcronym#0;class#Main#0" expanded="false" />
-            <element signature="method#trimZeroes#0;class#Main#0" expanded="false" />
+            <element signature="method#readNumber#0;class#Main#0" expanded="false" />
             <element signature="method#readDecimal#0;class#Main#0" expanded="false" />
-            <element signature="method#readTelephone#0;class#Main#0" expanded="false" />
-            <element signature="method#readWebAddress#0;class#Main#0" expanded="false" />
+            <marker date="1506842143342" expanded="false" signature="17744:18598" ph="{...}" />
+            <marker date="1506842143342" expanded="false" signature="18653:19309" ph="{...}" />
           </folding>
         </state>
       </provider>
