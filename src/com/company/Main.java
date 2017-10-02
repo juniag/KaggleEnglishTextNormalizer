@@ -16,23 +16,23 @@ public class Main {
     public static HashMap<String, String> money = new HashMap<String, String>();
     public static HashMap<String, String> time = new HashMap<String, String>();
 
-    public static void main(String[] args) {
-        String input = "400";
-        System.out.println("printing 400: " + readNumber(input));
-        input = "123456789";
-        System.out.println("printing 123456789: " + readNumber(input));
-        input = "999999999";
-        System.out.println("printing 999999999: " + readNumber(input));
-        input = "400400400";
-        System.out.println("printing 400400400: " + readNumber(input));
-        input = "111111111";
-        System.out.println("printing 111111111: " + readNumber(input)); //oops
-        input = "1000000000";
-        System.out.println("printing 1000000000: " + readNumber(input));
-        input = "1111111111";
-        System.out.println("printing 1111111111: " + readNumber(input));
-        input = "410023001";
-        System.out.println("printing 410023001: " + readNumber(input));
+    public static void main(String[] args) throws Exception {
+//        String input = "400";
+//        System.out.println("printing 400: " + readNumber(input));
+//        input = "123456789";
+//        System.out.println("printing 123456789: " + readNumber(input));
+//        input = "999999999";
+//        System.out.println("printing 999999999: " + readNumber(input));
+//        input = "400400400";
+//        System.out.println("printing 400400400: " + readNumber(input));
+//        input = "111111111";
+//        System.out.println("printing 111111111: " + readNumber(input)); //oops
+//        input = "1000000000";
+//        System.out.println("printing 1000000000: " + readNumber(input));
+//        input = "1111111111";
+//        System.out.println("printing 1111111111: " + readNumber(input));
+//        input = "410023001";
+//        System.out.println("printing 410023001: " + readNumber(input));
         //it still breaks sometimes, add more tests
 
 //        try{
@@ -46,7 +46,7 @@ public class Main {
 //            System.out.println(e);
 //        }
 
-
+        readTrainCsv("C:/Users/juneg/IdeaProjects/KaggleEnglishTextNormalization/Data/en_train.csv/en_train.csv");
     }
 
     public static void readTrainCsv(String csvFile) throws Exception {
@@ -56,7 +56,6 @@ public class Main {
         LinkedList<Pair<String, String>> l = new LinkedList<Pair<String, String>>();
         HashMap<String, Pair<String, String>> h = new HashMap<String, Pair<String, String>>();
         try {
-
             br = new BufferedReader(new FileReader(csvFile));
             while ((line = br.readLine()) != null) {
                 // use comma as separator
@@ -131,62 +130,11 @@ public class Main {
     }
 
     public static void readAndCreateHashmaps(String type, String input, String output){
-        System.out.println(type);
-        if(type.equals("VERBATIM")){
-            verbatim.put(input.trim(), output.trim());
-            return;
-        }
-
-        if(type.equals("FRACTION")){
-            String[] splitOutput = output.split("and");
-            fractionSymbols.put(input.substring(input.length() - 1).trim(),
-                    splitOutput[splitOutput.length-1].trim());
-            return;
-        }
-
-        if(type.equals("MEASURE")){
-            char[] ca = input.toCharArray();
-            boolean firstIndAbbr = false;
-            int i = 0;
-            while(!firstIndAbbr && i < ca.length){
-                char c = ca[i];
-                String sc = c + "";
-                if(Character.isDigit(c) || Character.isWhitespace(c)
-                        || sc.equals(".") || sc.equals(",")){
-                    i++;
-                }
-                else{
-                    firstIndAbbr = true;
-                }
-            }
-
-            String sym = "";
-            while(i < ca.length){
-                sym += ca[i];
-                i++;
-            }
-
-            measureAbbr.put(sym.trim(), output.trim());
-            return;
-        }
-
-        if(type.equals("MONEY")){
-            String[] splitSym = input.split("[0-9]|[,]|[.]");
-            for(String s: splitSym) {
-                if(!s.equals("")){
-                    money.put(s.trim(), output.trim());
-                    return;
-                }
-            }
-        }
-
         if(type.equals("TIME")){
-            String[] splitSym = input.split("[0-9]|[:]");
-            for(String s: splitSym) {
-                if(!s.equals("")){
-                    time.put(s.trim(), output.trim());
-                    return;
-                }
+            if(!(input.contains(":") || (input.toLowerCase()).contains("am") || (input.toLowerCase()).contains("a.m.")
+                    || (input.toLowerCase()).contains("pm") || (input.toLowerCase()).contains("p.m.")))
+            {
+                System.out.println(input + " : " + output);
             }
         }
     }
@@ -286,6 +234,12 @@ public class Main {
             return readNumber(before.replaceAll(",", ""));
         }
 
+        if(before.matches("[0-9][0-9].[0-9][0-9]") || (before.contains(":")
+                || (before.toLowerCase()).contains("am") || (before.toLowerCase()).contains("a.m.")
+                || (before.toLowerCase()).contains("pm") || (before.toLowerCase()).contains("p.m."))){
+            return readTime(before);
+        }
+
         if(before.matches("[0-9]*.[0-9]*")){
             return readDecimal(before);
         }
@@ -336,12 +290,18 @@ public class Main {
         return null;
     }
 
-    public static String readYear(String before) {
-        int num = Integer.parseInt(before);
+    private static String readTime(String input) {
+        String[] splitInput = input.split(" ");
+        String output = "";
+        return output;
+    }
+
+    public static String readYear(String input) {
+        int num = Integer.parseInt(input);
         if (num >= 2000 && num < 2010) {
-            return readNumber(before);
+            return readNumber(input);
         } else {
-            return readNumber(before.substring(0, 2)) + readNumber(before.substring(2));
+            return readNumber(input.substring(0, 2)) + readNumber(input.substring(2));
         }
     }
 
@@ -412,7 +372,7 @@ public class Main {
         return output.trim();
     }
 
-    public static String readNumber(String input){
+    public static String readNumber2(String input){
         if (input == "0"){
             return "o";
         }
@@ -471,6 +431,76 @@ public class Main {
             }
             return output + readNumber(input);
         }
+    }
+
+    public static String readNumber(String input){
+        if (input == "0"){
+            return "o";
+        }
+
+        String output = "";
+
+        //1-19 pronunciation
+        String[] unique = {"","one","two","three","four","five","six","seven","eight","nine","ten",
+                "eleven","twelve","thirteen","fourteen","fifteen","sixteen","seventeen","eighteen","nineteen"};
+        String[] tens = {"ten","twenty","thirty","forty","fifty","sixty","seventy","eighty","ninety"};
+        //pronunciation of digits beyond tens
+        String[] others = {"hundred", "thousand", "million", "billion", "zillion"};
+
+        int number;
+        int inputLength = input.length();
+        if(inputLength <= 2){
+            number = Integer.parseInt(input);
+            if (number < 20){
+                output = output + unique[number];
+                return output;
+            }
+            else{
+                int tenDigit = (int) Math.floor(number/10);
+                output = output + tens[tenDigit-1] + " ";
+
+                int oneDigit = number%10;
+                output = output + unique[oneDigit];
+
+                return output;
+            }
+        }
+
+        if(inputLength == 3){
+            String trimmedSubstring = trimZeroes(input.substring(1));
+            output = unique[Integer.parseInt(input.substring(0,1))] + " " + others[0];
+            if(trimmedSubstring.equals("")){
+                return output;
+            }
+            output +=  " " + readNumber(trimmedSubstring);
+            return output;
+        }
+
+        int endIndexOfTriple = inputLength % 3;
+        int level = (int) Math.floor(inputLength/3);
+        if(endIndexOfTriple == 0){
+            endIndexOfTriple = 3;
+            level--;
+        }
+
+        String trimmedSubstring = trimZeroes(input.substring(endIndexOfTriple));
+        output = readNumber(input.substring(0, endIndexOfTriple)) + " " + others[level];
+        if(trimmedSubstring.equals("")){
+            return output;
+        }
+        output += " " + readNumber(trimmedSubstring);
+        return output;
+    }
+
+    public static String trimZeroes(String input){
+        int trimIndex = 0;
+        while(trimIndex < input.length() && input.substring(trimIndex, trimIndex + 1).equals("0")){
+            trimIndex++;
+        }
+        if(trimIndex >= input.length()){
+            return "";
+        }
+        return input.substring(trimIndex);
     }
 
     public static String readDecimal(String input) {
